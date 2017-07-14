@@ -64,54 +64,50 @@
     <div class="row ">
         <div class="col-md-6 color1">
             <div class="row question">
-                <h2 class="title-length">单项选择题(1/100)</h2>
+                <h2 class="title-length" id="questionType">单项选择题(1/100)</h2>
                 <hr>
-                <div>下列那条代码无法打开相应的标签页?</div>
+                <div id="question">下列那条代码无法打开相应的标签页?</div>
                 <br>
             </div>
         </div>
         <div class="col-md-6 top">
-            <div class="panel panel-default panel-primary">
-                <!--<div class="panel-heading">图解CSS3</div>-->
+            <div class="panel panel-default panel-primary" id="selectA">
                 <div class="panel-body">
                     <div>
                         <strong class="select">A.</strong>
-                        详细讲解
-                        <span class="glyphicon glyphicon-ok go-right"></span>
+                        <span id="answerA">详细讲解</span>
+                        <span class="glyphicon glyphicon-ok go-right" id="OK_A"></span>
                     </div>
                 </div>
 
             </div>
-            <div class="panel panel-default panel-primary">
-                <!--<div class="panel-heading">图解CSS3</div>-->
+            <div class="panel panel-default panel-primary" id="selectB">
                 <div class="panel-body">
                     <div>
                         <strong class="select">B.</strong>
                         详细讲
-                        <span class="glyphicon glyphicon-ok go-right"></span>
+                        <span class="glyphicon glyphicon-ok go-right" id="OK_B"></span>
                     </div>
                 </div>
 
             </div>
-            <div class="panel panel-default panel-primary">
-                <!--<div class="panel-heading">图解CSS3</div>-->
+            <div class="panel panel-default panel-primary" id="selectC">
                 <div class="panel-body">
                     <div>
                         <strong class="select">C.</strong>
                         详细讲解
-                        <span class="glyphicon glyphicon-ok go-right"></span>
+                        <span class="glyphicon glyphicon-ok go-right" id="OK_C"></span>
                     </div>
 
                 </div>
 
             </div>
-            <div class="panel panel-default panel-primary">
-                <!--<div class="panel-heading">图解CSS3</div>-->
+            <div class="panel panel-default panel-primary" id="selectD" >
                 <div class="panel-body" onclick="">
                     <div>
                         <strong class="select">D.</strong>
                         详细讲解了选择器、边框、背景、文本
-                        <span class="glyphicon glyphicon-ok go-right"></span>
+                        <span class="glyphicon glyphicon-ok go-right" id="OK_D"></span>
                     </div>
                 </div>
             </div>
@@ -120,11 +116,11 @@
     <div class="row">
         <div class="col-md-6"></div>
         <div class="col-md-2">
-            <button class="btn btn-primary btn-block" type="button"><span class="glyphicon glyphicon-chevron-up">上一题</button>
+            <button class="btn btn-primary btn-block" type="button" id="before" onclick="before()"><span class="glyphicon glyphicon-chevron-up"></span>上一题</button>
         </div>
         <div class="col-md-2"><br></div>
         <div class="col-md-2">
-            <button class="btn btn-primary btn-block" type="button"><span class="glyphicon glyphicon-chevron-down">下一题</button>
+            <button class="btn btn-primary btn-block" type="button" id="after" onclick="after()"><span class="glyphicon glyphicon-chevron-down"></span>下一题</button>
         </div>
         <!--<div class="col-md-2">-->
             <!--<div class="btn-group btn-block ">-->
@@ -140,6 +136,7 @@
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="dist/js/bootstrap.min.js"></script>
+<script src="main.js"></script>
 </body>
 
 
