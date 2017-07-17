@@ -26,7 +26,21 @@ function init(){
 }
 //计时器
 function setTime(sumtime){
-    var starttime = new Date();
+    /**
+     * 注意：
+     * localStorage保存时长为永久，必须自己removeItem
+     * 所以建议使用sessionStorage(关闭会话自动清除)
+     * 也可以先检测一下然后手动removeItem毕竟sessionStorage关了会话就没了也有弊端
+     * 所以用哪个视情况而定
+     */
+    //localStorage获取
+    var starttime = localStorage.getItem('starttime');
+    if(!starttime){ //没有就new一个并扔进去(Date会自动toString)
+        starttime = new Date();
+        localStorage.setItem('starttime',starttime);
+    }else{ //有就把字符串转成Date
+        starttime = new Date(starttime);
+    }
     var interval = setInterval(function () {
         var newtime = new Date();
         var seconds = (newtime - starttime) / 1000;
@@ -35,6 +49,7 @@ function setTime(sumtime){
     }, 100);//0.1s刷新1次
     setTimeout(function () {
         clearInterval(interval);
+        localStorage.removeItem('starttime'); //清除本地数据
     }, sumtime * 1000)
 }
 
@@ -77,25 +92,28 @@ function setSelects(selectNum) {
 //被选中效果 questionType全局
 function isSelected(e) {
     if (questionType == "signal") {
-        switch(e.id){
-            case "selectA":
-                $('#OK_B,#OK_C,#OK_D').addClass('hide');
-                $('#OK_A').removeClass('hide');
-                break;
-            case "selectB":
-                $('#OK_A,#OK_C,#OK_D').addClass('hide');
-                $('#OK_B').removeClass('hide');
-                break;
-            case "selectC":
-                $('#OK_B,#OK_A,#OK_D').addClass('hide');
-                $('#OK_C').removeClass('hide');
-                break;
-            case "selectD":
-                $('#OK_B,#OK_C,#OK_A').addClass('hide');
-                $('#OK_D').removeClass('hide');
-                break;
-            default:
-        }
+        // switch(e.id){
+        //     case "selectA":
+        //         $('#OK_B,#OK_C,#OK_D').addClass('hide');
+        //         $('#OK_A').removeClass('hide');
+        //         break;
+        //     case "selectB":
+        //         $('#OK_A,#OK_C,#OK_D').addClass('hide');
+        //         $('#OK_B').removeClass('hide');
+        //         break;
+        //     case "selectC":
+        //         $('#OK_B,#OK_A,#OK_D').addClass('hide');
+        //         $('#OK_C').removeClass('hide');
+        //         break;
+        //     case "selectD":
+        //         $('#OK_B,#OK_C,#OK_A').addClass('hide');
+        //         $('#OK_D').removeClass('hide');
+        //         break;
+        //     default:
+        // }
         // $().addClass('isSelected');
+
+        $('[id^="OK_"]').addClass('hide');
+        $('#OK_'+e.id.substr(e.id.length-1,1)).removeClass('hide');
     }
 }
