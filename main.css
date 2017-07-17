@@ -22,3 +22,9 @@
 .title-length{
     width:90%;
 }
+.hide{
+    display: none;
+}
+.isSelected{
+    color: #2aabd2;
+}

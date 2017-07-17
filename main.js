@@ -16,9 +16,14 @@ var answerD = "73468";
 //考试时间
 var sumtime=7200;
 $(document).ready(
+    init(),
    setTime(sumtime)
 );
 
+//初始化
+function init(){
+    $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide')
+}
 //计时器
 function setTime(sumtime){
     var starttime = new Date();
@@ -55,7 +60,6 @@ function before() {
 function setQuestion() {
     $("#questionType").html(questionType + "(" + questionIndex + "/" + questionNum + ")");
     $("#question").html(questionIndex + "." + question);
-    $("#answerA").html(answerA);
 }
 
 //设置选项
@@ -70,9 +74,28 @@ function setSelects(selectNum) {
     }
 }
 
-//被选中效果
-function isSelect(questionType) {
+//被选中效果 questionType全局
+function isSelected(e) {
     if (questionType == "signal") {
-
+        switch(e.id){
+            case "selectA":
+                $('#OK_B,#OK_C,#OK_D').addClass('hide');
+                $('#OK_A').removeClass('hide');
+                break;
+            case "selectB":
+                $('#OK_A,#OK_C,#OK_D').addClass('hide');
+                $('#OK_B').removeClass('hide');
+                break;
+            case "selectC":
+                $('#OK_B,#OK_A,#OK_D').addClass('hide');
+                $('#OK_C').removeClass('hide');
+                break;
+            case "selectD":
+                $('#OK_B,#OK_C,#OK_A').addClass('hide');
+                $('#OK_D').removeClass('hide');
+                break;
+            default:
+        }
+        // $().addClass('isSelected');
     }
 }
