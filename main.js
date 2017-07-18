@@ -5,7 +5,7 @@ var questionNum = 100;
 //当前题目指针
 var questionIndex = 1;
 //题目类型
-var questionType = "signal";
+var questionType = "multiple";
 //问题
 var question = "jijkhdiokfv利用CSS进行元素的水平居中，比较简单，行级元素设置其父元素的text-align center，块级元素设置其本身的left 和 right margins为auto即可。本文收集了六种利用css进行元素的垂直居中的方法，每一种适用于不同的情况，在实际的使用过程中选择某一种方法即可";
 //具体选项
@@ -15,14 +15,19 @@ var answerC = "0987";
 var answerD = "73468";
 //考试时间
 var sumtime=7200;
-$(document).ready(
-    init(),
-   setTime(sumtime)
-);
+//答题计数数组
+var count=new Array(0,0,0,0);
+
+$(function(){
+    init(),setTime(sumtime)
+});
 
 //初始化
 function init(){
+    setQuestion();
     $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide')
+    setSelects(4);
+
 }
 //计时器
 function setTime(sumtime){
@@ -50,6 +55,8 @@ function setTime(sumtime){
     setTimeout(function () {
         clearInterval(interval);
         localStorage.removeItem('starttime'); //清除本地数据
+        alert("timeout");
+        //todo 提交
     }, sumtime * 1000)
 }
 
@@ -62,11 +69,19 @@ function secondstotime(seconds) {
     return hours + ':' + minutes + ':' + seconds;
 }
 
-//上一题
-function after() {
-    $("#answerA").html(answerB);
-}
 //下一题
+function after() {
+    var answerStr="";
+    for(var i=0;i<4;i++){
+        if(count[i]%2==1){
+            answerStr+=String.fromCharCode(65+i);
+        }
+        count[i]=0;//重置计数数组
+    }
+    console.log(answerStr);
+}
+
+//上一题
 function before() {
     $("#answerA").html(answerC);
 }
@@ -111,9 +126,36 @@ function isSelected(e) {
         //         break;
         //     default:
         // }
-        // $().addClass('isSelected');
-
         $('[id^="OK_"]').addClass('hide');
         $('#OK_'+e.id.substr(e.id.length-1,1)).removeClass('hide');
+        console.log(e.id.substr(e.id.length-1,1))
+    }else if(questionType == "multiple"){
+        $('#OK_'+e.id.substr(e.id.length-1,1)).toggleClass('hide');
+        switch(e.id.substr(e.id.length-1,1)){
+            case "A":
+                count[0]++;
+                console.log(count[0]);
+                break;
+            case "B":
+                count[1]++;
+                break;
+            case "C":
+                count[2]++;
+                break;
+            case "D":
+                count[3]++;
+                break;
+            default:
+        }
+    }
+}
+
+function exit(){
+    var msg = "退出将提交数据且不可再次进入";
+    if (confirm(msg)==true){
+        //todo 保存
+        console.log("ddd");
+    }else{
+        return false;
     }
 }
