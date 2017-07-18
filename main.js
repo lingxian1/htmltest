@@ -131,22 +131,8 @@ function isSelected(e) {
         console.log(e.id.substr(e.id.length-1,1))
     }else if(questionType == "multiple"){
         $('#OK_'+e.id.substr(e.id.length-1,1)).toggleClass('hide');
-        switch(e.id.substr(e.id.length-1,1)){
-            case "A":
-                count[0]++;
-                console.log(count[0]);
-                break;
-            case "B":
-                count[1]++;
-                break;
-            case "C":
-                count[2]++;
-                break;
-            case "D":
-                count[3]++;
-                break;
-            default:
-        }
+        var choose=e.id.substr(e.id.length-1,1);
+        count[choose.charCodeAt()-65]++;
     }
 }
 
