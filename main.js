@@ -1,11 +1,12 @@
 //选项数量
-var selectNum = 3;
+var selectNum = 4;
 //题目数量
 var questionNum = 100;
 //当前题目指针
 var questionIndex = 1;
 //题目类型
 var questionType = "multiple";
+var questionType = "signal";
 //问题
 var question = "jijkhdiokfv利用CSS进行元素的水平居中，比较简单，行级元素设置其父元素的text-align center，块级元素设置其本身的left 和 right margins为auto即可。本文收集了六种利用css进行元素的垂直居中的方法，每一种适用于不同的情况，在实际的使用过程中选择某一种方法即可";
 //具体选项
@@ -14,20 +15,19 @@ var answerB = "2344";
 var answerC = "0987";
 var answerD = "73468";
 //考试时间
-var sumtime=7200;
-//答题计数数组
+var sumtime=15;
+//临时答案计数数组
 var count=new Array(0,0,0,0);
-
+var answerStr="";
 $(function(){
     init(),setTime(sumtime)
 });
 
 //初始化
 function init(){
+    $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide');
     setQuestion();
-    $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide')
-    setSelects(4);
-
+    setSelects();
 }
 //计时器
 function setTime(sumtime){
@@ -55,8 +55,7 @@ function setTime(sumtime){
     setTimeout(function () {
         clearInterval(interval);
         localStorage.removeItem('starttime'); //清除本地数据
-        alert("timeout");
-        //todo 提交
+        saveAnswer();
     }, sumtime * 1000)
 }
 
@@ -71,14 +70,9 @@ function secondstotime(seconds) {
 
 //下一题
 function after() {
-    var answerStr="";
-    for(var i=0;i<4;i++){
-        if(count[i]%2==1){
-            answerStr+=String.fromCharCode(65+i);
-        }
-        count[i]=0;//重置计数数组
-    }
-    console.log(answerStr);
+
+    //todo 保存答案
+    console.log(getAnswer());
 }
 
 //上一题
@@ -93,7 +87,7 @@ function setQuestion() {
 }
 
 //设置选项
-function setSelects(selectNum) {
+function setSelects() {
     $("#selectC,#selectD").show();
     if (selectNum == 3) {
         $("#selectD").hide();
@@ -128,19 +122,47 @@ function isSelected(e) {
         // }
         $('[id^="OK_"]').addClass('hide');
         $('#OK_'+e.id.substr(e.id.length-1,1)).removeClass('hide');
-        console.log(e.id.substr(e.id.length-1,1))
+        answerStr=e.id.substr(e.id.length-1,1);
     }else if(questionType == "multiple"){
         $('#OK_'+e.id.substr(e.id.length-1,1)).toggleClass('hide');
         var choose=e.id.substr(e.id.length-1,1);
-        count[choose.charCodeAt()-65]++;
+        count[choose.charCodeAt()-65]++;//保存临时答案计数数组
     }
 }
 
-function exit(){
-    var msg = "退出将提交数据且不可再次进入";
+function getAnswer() {
+    if(questionType == "multiple"){//多选答案生成
+        answerStr="";
+        for(var i=0;i<4;i++){
+            if(count[i]%2==1){
+                answerStr+=String.fromCharCode(65+i);
+            }
+            count[i]=0;//重置临时答案计数数组
+        }
+    }
+    return answerStr;
+}
+
+function submitAnswer() {
+    var msg = "确定提交";
     if (confirm(msg)==true){
-        //todo 保存
-        console.log("ddd");
+        saveAnswer();
+    }else{
+        return false;
+    }
+}
+
+function saveAnswer() {
+    //todo 上传服务器
+    console.log("上传成功");
+    localStorage.clear();//清空本地存储
+    //todo 结果界面
+}
+function exit(){
+    var msg = "退出时将提交数据且不可再次进入！";
+    if (confirm(msg)==true){
+        saveAnswer();
+
     }else{
         return false;
     }
