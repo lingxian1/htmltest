@@ -1,9 +1,9 @@
 //选项数量
-var selectNum = 4;
+var selectCount = 4;
 //题目数量
-var questionNum = 100;
+var questionCount = 100;
 //当前题目指针
-var questionIndex = 1;
+var questionIndex = 0;
 //题目类型
 var questionType = "multiple";
 var questionType = "signal";
@@ -14,20 +14,46 @@ var answerA = "1234";
 var answerB = "2344";
 var answerC = "0987";
 var answerD = "73468";
-//考试时间
-var sumtime=15;
+
 //临时答案计数数组
 var count=new Array(0,0,0,0);
 var answerStr="";
+
+var data;
+
+//初始化
 $(function(){
-    init(),setTime(sumtime)
+    $.get('./exam.json',function (result) {
+        //考试时间
+        var sumtime=result.answer_time;
+        questionCount=result.question_count;
+        setTime(sumtime);
+    }),
+    $.get('./question.json',function (datas) {
+        data=datas;
+        setAnswer(0);
+        setQuestion();
+        setSelects();
+    }),
+        initAnswer()
 });
 
 //初始化
-function init(){
+function initAnswer(){
     $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide');
-    setQuestion();
-    setSelects();
+}
+
+function setAnswer(index) {
+    question=data[index].question_text;
+    console.log(question);
+    questionType=data[index].question_type;
+    selectCount=data[index].question_choose_count;
+    answerA=data[index].question_chooseA;
+    answerB=data[index].question_chooseB;
+    answerC=data[index].question_chooseC;
+    answerD=data[index].question_chooseD;
+    questionIndex++;
+    console.log(questionIndex);
 }
 //计时器
 function setTime(sumtime){
@@ -70,29 +96,36 @@ function secondstotime(seconds) {
 
 //下一题
 function after() {
-
+    initAnswer();
+    setAnswer(questionIndex);
+    setQuestion();
+    setSelects();
     //todo 保存答案
-    console.log(getAnswer());
+    //console.log(getAnswer());
 }
 
 //上一题
 function before() {
-    $("#answerA").html(answerC);
+
 }
 
 //设置问题及其类型
 function setQuestion() {
-    $("#questionType").html(questionType + "(" + questionIndex + "/" + questionNum + ")");
-    $("#question").html(questionIndex + "." + question);
+    $("#questionType").html(questionType + "(" + questionIndex + "/" + questionCount + ")");
+    $("#question").html(questionIndex + ")." + question);
 }
 
 //设置选项
 function setSelects() {
+    $("#answerA").html(answerA);
+    $("#answerB").html(answerB);
+    $("#answerC").html(answerC);
+    $("#answerD").html(answerD);
     $("#selectC,#selectD").show();
-    if (selectNum == 3) {
+    if (selectCount == 3) {
         $("#selectD").hide();
     }
-    if (selectNum == 2) {
+    if (selectCount == 2) {
         $("#selectC").hide();
         $("#selectD").hide();
     }
@@ -130,6 +163,7 @@ function isSelected(e) {
     }
 }
 
+//生成考生答案
 function getAnswer() {
     if(questionType == "multiple"){//多选答案生成
         answerStr="";
@@ -143,6 +177,7 @@ function getAnswer() {
     return answerStr;
 }
 
+//递交答案
 function submitAnswer() {
     var msg = "确定提交";
     if (confirm(msg)==true){
@@ -152,17 +187,19 @@ function submitAnswer() {
     }
 }
 
+//上传答案
 function saveAnswer() {
     //todo 上传服务器
     console.log("上传成功");
     localStorage.clear();//清空本地存储
     //todo 结果界面
 }
+
+//退出答题
 function exit(){
     var msg = "退出时将提交数据且不可再次进入！";
     if (confirm(msg)==true){
         saveAnswer();
-
     }else{
         return false;
     }
