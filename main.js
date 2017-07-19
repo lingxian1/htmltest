@@ -100,7 +100,8 @@ function secondstotime(seconds) {
 
 //下一题
 function after() {
-    getAnswer(answerStr);
+    //保存答案
+    createAnswer(answerStr);
     questionIndex++;
     if(questionIndex>=questionCount){
         submitAnswer();
@@ -114,12 +115,9 @@ function after() {
         setQuestion();
         setSelects();
     }
-
-    //todo 保存答案
-    //console.log(getAnswer());
 }
 
-//上一题
+//todo 上一题
 function before() {
 
 }
@@ -161,7 +159,7 @@ function isSelected(e) {
 }
 
 //生成考生答案_每道题
-function getAnswer(answerStr) {
+function createAnswer(answerStr) {
     if(questionType == "multiple"){//多选答案生成
         var answerStr="";
         for(var i=0;i<4;i++){
@@ -170,10 +168,9 @@ function getAnswer(answerStr) {
             }
             count[i]=0;//重置临时答案计数数组
         }
-        console.log(questionID+"- "+answerStr);
-    }else if(questionType == "signal"){
-        console.log(questionID+"- "+answerStr);
     }
+    console.log(questionID+"- "+answerStr);
+    localStorage.setItem(questionID,answerStr);
 }
 
 //递交答案
@@ -186,9 +183,23 @@ function submitAnswer() {
     }
 }
 
+
+//答案包装为JSON
+function ansToJson() {
+    var json = {}, json_sorted = {}, keys = [];
+    localStorage.removeItem("starttime")
+    for(var k in localStorage) {
+        keys.push(k);
+        json[""+k] = localStorage[k];
+    }
+    console.log(json);
+    json_sorted = JSON.stringify(json);
+    return json_sorted;
+}
 //上传答案
 function saveAnswer() {
-    //todo 上传服务器
+    ansToJson();
+    //todo ajax上传服务器
     console.log("上传成功");
     localStorage.clear();//清空本地存储
     //todo 结果界面
