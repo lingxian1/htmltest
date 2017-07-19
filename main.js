@@ -170,9 +170,9 @@ function getAnswer(answerStr) {
             }
             count[i]=0;//重置临时答案计数数组
         }
-        console.log(questionID+"-"+answerStr);
+        console.log(questionID+"- "+answerStr);
     }else if(questionType == "signal"){
-        console.log(questionID+"-"+answerStr);
+        console.log(questionID+"- "+answerStr);
     }
 }
 
