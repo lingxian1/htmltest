@@ -1,35 +1,39 @@
-//选项数量
-var selectCount = 4;
 //题目数量
-var questionCount = 100;
+var questionCount = 10;
 //当前题目指针
 var questionIndex = 0;
+
+//问题ID
+var questionID="";
 //题目类型
-var questionType = "multiple";
+// var questionType = "multiple";
 var questionType = "signal";
 //问题
-var question = "jijkhdiokfv利用CSS进行元素的水平居中，比较简单，行级元素设置其父元素的text-align center，块级元素设置其本身的left 和 right margins为auto即可。本文收集了六种利用css进行元素的垂直居中的方法，每一种适用于不同的情况，在实际的使用过程中选择某一种方法即可";
+var question = "题目获取中...";
+//选项数量
+var selectCount = 4;
 //具体选项
-var answerA = "1234";
-var answerB = "2344";
-var answerC = "0987";
-var answerD = "73468";
+var answerA = "问题获取中...";
+var answerB = "问题获取中...";
+var answerC = "问题获取中...";
+var answerD = "问题获取中...";
 
 //临时答案计数数组
 var count=new Array(0,0,0,0);
 var answerStr="";
-
+//保存题目数据（临时）
 var data;
 
 //初始化
 $(function(){
+    //获取考试信息
     $.get('./exam.json',function (result) {
         //考试时间
         var sumtime=result.answer_time;
         questionCount=result.question_count;
         setTime(sumtime);
     }),
-    $.get('./question.json',function (datas) {
+    $.get('./question.json',function (datas) {  //获取全部题目信息
         data=datas;
         setAnswer(0);
         setQuestion();
@@ -38,22 +42,22 @@ $(function(){
         initAnswer()
 });
 
-//初始化
+//初始化选项选中标志
 function initAnswer(){
     $('#OK_A,#OK_B,#OK_C,#OK_D').addClass('hide');
 }
 
+//设置答案
 function setAnswer(index) {
+    questionID=data[index].question_ID;
     question=data[index].question_text;
-    console.log(question);
     questionType=data[index].question_type;
     selectCount=data[index].question_choose_count;
     answerA=data[index].question_chooseA;
     answerB=data[index].question_chooseB;
     answerC=data[index].question_chooseC;
     answerD=data[index].question_chooseD;
-    questionIndex++;
-    console.log(questionIndex);
+    // console.log(questionIndex);
 }
 //计时器
 function setTime(sumtime){
@@ -96,10 +100,21 @@ function secondstotime(seconds) {
 
 //下一题
 function after() {
-    initAnswer();
-    setAnswer(questionIndex);
-    setQuestion();
-    setSelects();
+    getAnswer(answerStr);
+    questionIndex++;
+    if(questionIndex>=questionCount){
+        submitAnswer();
+        console.log("done");
+    }else {
+        if(questionIndex==questionCount-1){
+            $("#after").html("提交");
+        }
+        initAnswer();
+        setAnswer(questionIndex);
+        setQuestion();
+        setSelects();
+    }
+
     //todo 保存答案
     //console.log(getAnswer());
 }
@@ -111,8 +126,9 @@ function before() {
 
 //设置问题及其类型
 function setQuestion() {
-    $("#questionType").html(questionType + "(" + questionIndex + "/" + questionCount + ")");
-    $("#question").html(questionIndex + ")." + question);
+    var index=questionIndex+1;
+    $("#questionType").html(questionType + "(" + index + "/" + questionCount + ")");
+    $("#question").html(index + ")." + question);
 }
 
 //设置选项
@@ -134,25 +150,6 @@ function setSelects() {
 //被选中效果 questionType全局
 function isSelected(e) {
     if (questionType == "signal") {
-        // switch(e.id){
-        //     case "selectA":
-        //         $('#OK_B,#OK_C,#OK_D').addClass('hide');
-        //         $('#OK_A').removeClass('hide');
-        //         break;
-        //     case "selectB":
-        //         $('#OK_A,#OK_C,#OK_D').addClass('hide');
-        //         $('#OK_B').removeClass('hide');
-        //         break;
-        //     case "selectC":
-        //         $('#OK_B,#OK_A,#OK_D').addClass('hide');
-        //         $('#OK_C').removeClass('hide');
-        //         break;
-        //     case "selectD":
-        //         $('#OK_B,#OK_C,#OK_A').addClass('hide');
-        //         $('#OK_D').removeClass('hide');
-        //         break;
-        //     default:
-        // }
         $('[id^="OK_"]').addClass('hide');
         $('#OK_'+e.id.substr(e.id.length-1,1)).removeClass('hide');
         answerStr=e.id.substr(e.id.length-1,1);
@@ -163,18 +160,20 @@ function isSelected(e) {
     }
 }
 
-//生成考生答案
-function getAnswer() {
+//生成考生答案_每道题
+function getAnswer(answerStr) {
     if(questionType == "multiple"){//多选答案生成
-        answerStr="";
+        var answerStr="";
         for(var i=0;i<4;i++){
             if(count[i]%2==1){
                 answerStr+=String.fromCharCode(65+i);
             }
             count[i]=0;//重置临时答案计数数组
         }
+        console.log(questionID+"-"+answerStr);
+    }else if(questionType == "signal"){
+        console.log(questionID+"-"+answerStr);
     }
-    return answerStr;
 }
 
 //递交答案
